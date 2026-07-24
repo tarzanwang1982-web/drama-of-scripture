@@ -6,20 +6,20 @@ const BOOK = {
 };
 
 const ACTS = [
-  { number: "01", name: "创造", subtitle: "上帝建立他的国度", page: 26, printPage: 15 },
-  { number: "02", name: "堕落", subtitle: "国度里的叛逆", page: 40, printPage: 29 },
-  { number: "03", name: "以色列", subtitle: "君王拣选以色列", page: 46, printPage: 35 },
-  { number: "04", name: "基督", subtitle: "君王的到来", page: 120, printPage: 109 },
-  { number: "05", name: "教会", subtitle: "传播君王的消息", page: 138, printPage: 127 },
-  { number: "06", name: "新创造", subtitle: "救赎的完成", page: 186, printPage: 175 },
+  { number: "01", name: "创造", subtitle: "上帝建立他的国度", file: "./act-1-authorized-cn.pdf", pages: 14, printPage: 15 },
+  { number: "02", name: "堕落", subtitle: "国度里的叛逆", file: "./act-2-authorized-cn.pdf", pages: 6, printPage: 29 },
+  { number: "03", name: "以色列", subtitle: "君王拣选以色列 · 含幕间", file: "./act-3-authorized-cn.pdf", pages: 92, printPage: 35 },
+  { number: "04", name: "基督", subtitle: "王的到来 · 救赎的完成", file: "./act-4-authorized-cn.pdf", pages: 48, printPage: 127 },
+  { number: "05", name: "教会", subtitle: "传播王者的消息 · 教会的使命", file: "./act-5-authorized-cn.pdf", pages: 28, printPage: 175 },
+  { number: "06", name: "新创造", subtitle: "王的归来 · 国度成就", file: "./act-6-authorized-cn.pdf", pages: 10, printPage: 203 },
 ];
 
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 let currentAct = 0;
 let lastTrigger = null;
 
-function pdfUrl(page) {
-  return `${BOOK.file}#page=${page}&view=FitH`;
+function pdfUrl(file, page = 1) {
+  return `${file}#page=${page}&view=FitH`;
 }
 
 function createReader() {
@@ -39,8 +39,8 @@ function createReader() {
           <p>${BOOK.subtitle}</p>
         </div>
         <div class="authorized-reader__actions">
-          <a class="authorized-reader__external" href="${BOOK.file}" target="_blank" rel="noopener">
-            全屏打开
+          <a class="authorized-reader__external" href="${ACTS[0].file}" target="_blank" rel="noopener">
+            全屏阅读本幕
           </a>
           <a class="authorized-reader__download" href="${BOOK.file}" download>
             下载 PDF
@@ -54,7 +54,7 @@ function createReader() {
         <aside class="authorized-reader__chapters" aria-label="授权原文章节导航">
           <figure class="authorized-reader__book">
             <img src="${BOOK.cover}" alt="《圣经戏剧》授权中文版封面" />
-            <figcaption>完整授权版 · 247 页</figcaption>
+            <figcaption>六幕分卷阅读 · 完整版 247 页</figcaption>
           </figure>
           <nav>
             ${ACTS.map((act, index) => `
@@ -109,7 +109,7 @@ function createReader() {
     currentAct = nextIndex;
     current.textContent = `第${["一", "二", "三", "四", "五", "六"][nextIndex]}幕 · ${act.name}`;
     page.textContent = `书内第 ${act.printPage} 页`;
-    external.href = pdfUrl(act.page);
+    external.href = pdfUrl(act.file);
     actButtons.forEach((button, buttonIndex) => {
       const selected = buttonIndex === nextIndex;
       button.classList.toggle("is-active", selected);
@@ -117,7 +117,7 @@ function createReader() {
     });
     if (forceLoad || modal.classList.contains("is-open")) {
       loading.classList.remove("is-hidden");
-      frame.src = pdfUrl(act.page);
+      frame.src = pdfUrl(act.file);
     }
   };
 
@@ -169,7 +169,7 @@ function mountReadingEntry(reader) {
         <div class="authorized-reading-entry__copy">
           <span>AUTHORIZED EDITION · 授权版本</span>
           <h3>在导读之后，回到作者的完整论述</h3>
-          <p>六幕导读帮助你看见结构，授权原文则保留作者完整的论证、注释与章节脉络。</p>
+          <p>六幕导读帮助你看见结构，授权原文按幕载入，保留作者完整的论证、注释与章节脉络。</p>
         </div>
         <div class="authorized-reading-entry__meta">
           <span data-entry-act>第一幕 · 创造</span>
