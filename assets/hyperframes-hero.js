@@ -1,10 +1,10 @@
 const ACTS = [
-  { number: "01", name: "创造", time: 4 },
-  { number: "02", name: "堕落", time: 8.5 },
-  { number: "03", name: "以色列", time: 13.5 },
-  { number: "04", name: "基督", time: 20 },
-  { number: "05", name: "教会", time: 26 },
-  { number: "06", name: "新创造", time: 31 },
+  { number: "01", name: "创造", english: "CREATION", time: 4, image: "images/act-1-creation.webp" },
+  { number: "02", name: "堕落", english: "FALL", time: 8.5, image: "images/act-2-fall.webp" },
+  { number: "03", name: "以色列", english: "ISRAEL", time: 13.5, image: "images/act-3-israel.webp" },
+  { number: "04", name: "基督", english: "CHRIST", time: 20, image: "images/act-4-christ.webp" },
+  { number: "05", name: "教会", english: "CHURCH", time: 26, image: "images/act-5-church.webp" },
+  { number: "06", name: "新创造", english: "NEW CREATION", time: 31, image: "images/act-6-new-creation.webp" },
 ];
 
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -24,6 +24,61 @@ function waitForHero() {
     mount(found);
   });
   observer.observe(document.body, { childList: true, subtree: true });
+}
+
+function waitForChapterTabs() {
+  const mountIfReady = () => {
+    const tablist = document.querySelector(".act-tabs");
+    if (!tablist || tablist.parentElement?.querySelector(".chapter-image-gallery")) return false;
+    mountChapterGallery(tablist);
+    return true;
+  };
+
+  if (mountIfReady()) return;
+  const observer = new MutationObserver(() => {
+    if (!mountIfReady()) return;
+    observer.disconnect();
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+}
+
+function mountChapterGallery(tablist) {
+  const tabs = [...tablist.querySelectorAll('[role="tab"]')];
+  if (tabs.length !== ACTS.length) return;
+
+  const gallery = document.createElement("div");
+  gallery.className = "chapter-image-gallery";
+  gallery.setAttribute("aria-label", "六幕章节配图");
+  gallery.innerHTML = ACTS.map((act, index) => `
+    <button type="button" class="chapter-image-card" data-index="${index}" aria-label="打开第${index + 1}幕：${act.name}">
+      <img src="${act.image}" alt="${act.name}主题插图" loading="lazy" />
+      <span class="chapter-image-shade"></span>
+      <span class="chapter-image-number">${act.number}</span>
+      <span class="chapter-image-copy">
+        <small>${act.english}</small>
+        <strong>${act.name}</strong>
+      </span>
+      <i aria-hidden="true">↗</i>
+    </button>
+  `).join("");
+  tablist.before(gallery);
+
+  const cards = [...gallery.querySelectorAll(".chapter-image-card")];
+  const syncActive = () => {
+    const activeIndex = Math.max(0, tabs.findIndex((tab) => tab.getAttribute("aria-selected") === "true"));
+    cards.forEach((card, index) => card.classList.toggle("is-active", index === activeIndex));
+  };
+
+  cards.forEach((card, index) => {
+    card.addEventListener("click", () => {
+      tabs[index].click();
+      syncActive();
+    });
+  });
+
+  const selectionObserver = new MutationObserver(syncActive);
+  tabs.forEach((tab) => selectionObserver.observe(tab, { attributes: true, attributeFilter: ["aria-selected"] }));
+  syncActive();
 }
 
 function mount(hero) {
@@ -192,3 +247,4 @@ function mount(hero) {
 }
 
 waitForHero();
+waitForChapterTabs();
