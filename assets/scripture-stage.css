@@ -1,0 +1,374 @@
+.hero.has-scripture-stage {
+  isolation: isolate;
+}
+
+.hero.has-scripture-stage .hero-copy {
+  width: min(780px, 52vw);
+}
+
+.hero.has-scripture-stage .story-orbit,
+.hero.has-scripture-stage > ol {
+  display: none;
+}
+
+.scripture-stage {
+  --stage-glow: rgba(255, 205, 135, .34);
+  position: absolute;
+  z-index: 1;
+  top: 94px;
+  right: 1.8vw;
+  bottom: 42px;
+  width: min(48vw, 790px);
+  min-height: 560px;
+  overflow: hidden;
+  border: 1px solid rgba(233, 240, 235, .1);
+  background:
+    radial-gradient(circle at 50% 58%, rgba(230, 90, 60, .09), transparent 33%),
+    radial-gradient(circle at 50% 50%, rgba(255, 213, 151, .055), transparent 62%);
+  box-shadow: inset 0 0 90px rgba(2, 8, 6, .54);
+  clip-path: polygon(5% 0, 100% 0, 100% 94%, 95% 100%, 0 100%, 0 6%);
+}
+
+.scripture-stage::before,
+.scripture-stage::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.scripture-stage::before {
+  inset: 22px;
+  border: 1px solid rgba(233, 240, 235, .075);
+  clip-path: polygon(0 0, 32% 0, 32% 1px, 100% 1px, 100% 100%, 68% 100%, 68% calc(100% - 1px), 0 calc(100% - 1px));
+}
+
+.scripture-stage::after {
+  width: 9px;
+  height: 9px;
+  top: 18px;
+  right: 18px;
+  border-top: 1px solid var(--accent);
+  border-right: 1px solid var(--accent);
+}
+
+.scripture-canvas,
+.scripture-aura {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.scripture-canvas {
+  z-index: 1;
+  cursor: pointer;
+}
+
+.scripture-aura {
+  z-index: 0;
+  opacity: .42;
+  pointer-events: none;
+  background:
+    conic-gradient(from 42deg at 50% 58%, transparent, rgba(230, 90, 60, .1), transparent 14%, transparent 76%, rgba(255, 216, 157, .08), transparent),
+    radial-gradient(ellipse at 50% 63%, var(--stage-glow), transparent 21%);
+  filter: blur(20px);
+  transition: opacity .8s cubic-bezier(.16, 1, .3, 1), transform 1.2s cubic-bezier(.16, 1, .3, 1);
+  animation: scripture-aura-breathe 6s ease-in-out infinite;
+}
+
+.scripture-stage.is-hovered .scripture-aura,
+.scripture-stage.is-opening .scripture-aura {
+  opacity: .88;
+  transform: scale(1.12);
+}
+
+.scripture-stage.is-complete .scripture-aura {
+  opacity: 1;
+  transform: scale(1.26);
+  background:
+    conic-gradient(from 42deg at 50% 58%, transparent, rgba(230, 90, 60, .18), transparent 14%, transparent 76%, rgba(255, 222, 166, .16), transparent),
+    radial-gradient(ellipse at 50% 63%, rgba(255, 219, 164, .54), transparent 27%);
+}
+
+@keyframes scripture-aura-breathe {
+  50% { filter: blur(26px); }
+}
+
+.scripture-copy {
+  position: absolute;
+  z-index: 4;
+  top: 42px;
+  left: 46px;
+  right: 44px;
+  pointer-events: none;
+}
+
+.scripture-kicker {
+  display: block;
+  color: var(--accent-light);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .22em;
+}
+
+.scripture-copy strong {
+  display: block;
+  margin-top: 10px;
+  font-family: var(--display);
+  font-size: clamp(22px, 2.1vw, 34px);
+  letter-spacing: -.045em;
+  line-height: 1.05;
+}
+
+.scripture-copy p {
+  max-width: 440px;
+  margin: 9px 0 0;
+  color: var(--dim);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.scripture-trigger {
+  position: absolute;
+  z-index: 5;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+}
+
+.scripture-trigger span,
+.scripture-trigger i {
+  position: absolute;
+  bottom: 42px;
+  transition: transform .5s cubic-bezier(.16, 1, .3, 1), opacity .4s;
+}
+
+.scripture-trigger span {
+  right: 74px;
+  color: var(--soft);
+  font-size: 11px;
+}
+
+.scripture-trigger i {
+  right: 32px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(233, 240, 235, .3);
+  border-radius: 50%;
+  color: var(--accent-light);
+  font-style: normal;
+}
+
+.scripture-stage.is-hovered .scripture-trigger i {
+  border-color: var(--accent);
+  transform: rotate(45deg) scale(1.12);
+}
+
+.scripture-stage.is-opening .scripture-trigger,
+.scripture-stage.is-complete .scripture-trigger {
+  pointer-events: none;
+}
+
+.scripture-stage.is-opening .scripture-trigger span,
+.scripture-stage.is-opening .scripture-trigger i,
+.scripture-stage.is-complete .scripture-trigger span,
+.scripture-stage.is-complete .scripture-trigger i {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.scripture-timeline {
+  position: absolute;
+  z-index: 5;
+  right: 28px;
+  bottom: 32px;
+  left: 28px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity .6s, transform .8s cubic-bezier(.16, 1, .3, 1);
+  pointer-events: none;
+}
+
+.scripture-stage.is-narrating .scripture-timeline,
+.scripture-stage.is-complete .scripture-timeline {
+  opacity: 1;
+  transform: none;
+}
+
+.scripture-timeline::before {
+  content: "";
+  position: absolute;
+  top: 13px;
+  left: 8.3%;
+  right: 8.3%;
+  height: 1px;
+  background: rgba(233, 240, 235, .15);
+}
+
+.scripture-timeline i {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  color: var(--dim);
+  font-style: normal;
+}
+
+.scripture-timeline b {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 27px;
+  height: 27px;
+  border: 1px solid rgba(233, 240, 235, .2);
+  border-radius: 50%;
+  background: var(--bg);
+  font-family: var(--mono);
+  font-size: 8px;
+}
+
+.scripture-timeline span {
+  font-size: 9px;
+}
+
+.scripture-timeline i.is-active b {
+  border-color: var(--accent);
+  color: var(--accent-light);
+  box-shadow: 0 0 24px rgba(230, 90, 60, .28);
+  transform: scale(1.15);
+}
+
+.scripture-timeline i.is-passed {
+  color: var(--soft);
+}
+
+.scripture-timeline i.is-passed b {
+  border-color: rgba(255, 216, 157, .48);
+  color: #ffdda3;
+}
+
+.scripture-replay {
+  position: absolute;
+  z-index: 6;
+  right: 34px;
+  bottom: 84px;
+  min-height: 42px;
+  padding: 0 15px;
+  border: 1px solid rgba(255, 222, 166, .36);
+  border-radius: 999px;
+  background: rgba(7, 15, 13, .72);
+  color: #f5e4c4;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity .5s, transform .5s cubic-bezier(.16, 1, .3, 1);
+}
+
+.scripture-stage.is-complete .scripture-replay {
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+}
+
+.scripture-hint {
+  position: absolute;
+  z-index: 4;
+  left: 34px;
+  bottom: 37px;
+  margin: 0;
+  color: rgba(189, 203, 196, .6);
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: .08em;
+  transition: opacity .4s;
+  pointer-events: none;
+}
+
+.scripture-stage.is-opening .scripture-hint,
+.scripture-stage.is-narrating .scripture-hint,
+.scripture-stage.is-complete .scripture-hint {
+  opacity: 0;
+}
+
+@media (max-width: 1120px) {
+  .hero.has-scripture-stage {
+    align-items: flex-start;
+  }
+
+  .hero.has-scripture-stage .hero-copy {
+    width: min(720px, 57vw);
+  }
+
+  .scripture-stage {
+    right: -4vw;
+    width: 49vw;
+  }
+}
+
+@media (max-width: 760px) {
+  .hero.has-scripture-stage {
+    min-height: 1420px;
+    padding-bottom: 760px;
+  }
+
+  .hero.has-scripture-stage .hero-copy {
+    width: 100%;
+  }
+
+  .scripture-stage {
+    top: auto;
+    right: 16px;
+    bottom: 54px;
+    left: 16px;
+    width: auto;
+    height: 650px;
+    min-height: 0;
+  }
+
+  .scripture-copy {
+    top: 31px;
+    left: 28px;
+    right: 28px;
+  }
+
+  .scripture-copy strong {
+    font-size: 25px;
+  }
+
+  .scripture-timeline {
+    right: 16px;
+    bottom: 24px;
+    left: 16px;
+  }
+
+  .scripture-timeline span {
+    display: none;
+  }
+
+  .scripture-trigger span {
+    right: 66px;
+  }
+
+  .scripture-replay {
+    right: 22px;
+    bottom: 70px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scripture-aura {
+    animation: none;
+  }
+
+  .scripture-canvas {
+    cursor: default;
+  }
+}
