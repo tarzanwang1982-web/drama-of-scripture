@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>第06幕 新创造｜《圣经戏剧》授权原文</title>
+  <style>
+@font-face {
+  font-family: "Reader Sans";
+  src: url("./hyperframes/scripture-cinematic/assets/noto-sans-sc-400.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Reader Sans";
+  src: url("./hyperframes/scripture-cinematic/assets/noto-sans-sc-700.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Reader Serif";
+  src: url("./hyperframes/scripture-cinematic/assets/noto-serif-sc-700.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+:root {
+  --reader-scale: 1;
+  --paper: #e9ebe5;
+  --ink: #18211d;
+  --muted: #667068;
+  --line: rgba(24, 33, 29, .15);
+  --accent: #c94e37;
+  --gold: #8b642c;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 12% 8%, rgba(139, 100, 44, .08), transparent 28rem),
+    var(--paper);
+  font-family: "Reader Sans", "Microsoft YaHei", sans-serif;
+  font-size: calc(17px * var(--reader-scale));
+  line-height: 1.95;
+  text-rendering: optimizeLegibility;
+}
+body.is-night {
+  --paper: #101815;
+  --ink: #e5e9e1;
+  --muted: #98a39a;
+  --line: rgba(229, 233, 225, .14);
+  --gold: #d7ad65;
+}
+.reading-toolbar {
+  position: sticky;
+  z-index: 30;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 58px;
+  padding: 8px clamp(14px, 3vw, 30px);
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  background: color-mix(in srgb, var(--paper) 90%, transparent);
+  backdrop-filter: blur(15px);
+}
+.reading-toolbar__title {
+  display: grid;
+  gap: 1px;
+}
+.reading-toolbar__title span {
+  color: var(--accent);
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 9px;
+  letter-spacing: .13em;
+}
+.reading-toolbar__title strong {
+  overflow: hidden;
+  max-width: 52vw;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.reading-tools { display: flex; align-items: center; gap: 6px; }
+.reading-tools button {
+  min-width: 42px;
+  min-height: 42px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.reading-tools button:hover,
+.reading-tools button:focus-visible {
+  border-color: var(--accent);
+  outline: 0;
+}
+.reading-progress {
+  position: fixed;
+  z-index: 40;
+  top: 57px;
+  left: 0;
+  width: var(--progress, 0%);
+  height: 2px;
+  background: var(--accent);
+  transform-origin: left;
+}
+.chapter-hero {
+  display: grid;
+  align-content: end;
+  min-height: 34vh;
+  padding: clamp(48px, 9vw, 110px) clamp(22px, 8vw, 90px) 48px;
+  border-bottom: 1px solid var(--line);
+}
+.chapter-hero span {
+  color: var(--accent);
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: .16em;
+}
+.chapter-hero h1 {
+  max-width: 900px;
+  margin: 13px 0 0;
+  font-family: "Reader Serif", serif;
+  font-size: clamp(32px, 6vw, 72px);
+  line-height: 1.03;
+  letter-spacing: -.04em;
+}
+.book-content {
+  width: min(820px, calc(100% - 42px));
+  margin: 0 auto;
+  padding: clamp(45px, 8vw, 92px) 0 120px;
+}
+.book-content > p {
+  margin: 0 0 1.15em;
+  text-align: justify;
+}
+.book-content > p + p { text-indent: 2em; }
+.book-content h1,
+.book-content h2,
+.book-content h3,
+.book-content blockquote {
+  margin: 3em 0 1.15em;
+  color: var(--ink);
+  font-family: "Reader Serif", serif;
+  line-height: 1.25;
+}
+.book-content blockquote {
+  padding: 30px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  font-size: clamp(24px, 4vw, 42px);
+}
+.book-content blockquote p { margin: 0; }
+.book-content blockquote.chapter-break {
+  margin-top: 90px;
+  color: var(--gold);
+}
+.book-content strong { font-weight: 700; }
+.book-content img {
+  display: block;
+  width: auto;
+  max-width: min(100%, 720px);
+  height: auto;
+  margin: 36px auto;
+  filter: saturate(.9) contrast(1.02);
+}
+.book-content table {
+  width: 100%;
+  margin: 32px 0;
+  border-collapse: collapse;
+  font-size: .9em;
+}
+.book-content td,
+.book-content th {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+.book-content a { color: var(--accent); }
+.source-note {
+  margin-top: 72px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+@media (max-width: 640px) {
+  body { font-size: calc(16px * var(--reader-scale)); }
+  .reading-toolbar__title strong { max-width: 42vw; }
+  .reading-tools button { min-width: 40px; padding: 0 8px; }
+  .chapter-hero { min-height: 28vh; padding-bottom: 34px; }
+  .book-content { width: min(100% - 30px, 820px); padding-top: 38px; }
+  .book-content > p { text-align: left; }
+}
+@media print {
+  .reading-toolbar, .reading-progress { display: none; }
+  .chapter-hero { min-height: 0; padding: 20mm 0 12mm; }
+  .book-content { width: 100%; padding: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+  <header class="reading-toolbar">
+    <div class="reading-toolbar__title">
+      <span>THE DRAMA OF SCRIPTURE · 授权原文</span>
+      <strong>第06幕 · 王的归来：圆满救赎</strong>
+    </div>
+    <div class="reading-tools" aria-label="阅读设置">
+      <button type="button" data-font-down aria-label="缩小字号">A−</button>
+      <button type="button" data-font-up aria-label="放大字号">A＋</button>
+      <button type="button" data-theme aria-label="切换日间或夜间阅读">明暗</button>
+    </div>
+  </header>
+  <div class="reading-progress" aria-hidden="true"></div>
+  <section class="chapter-hero">
+    <span>ACT 06 · 新创造</span>
+    <h1>王的归来：圆满救赎</h1>
+  </section>
+  <div class="book-content"><p>当上帝打算将他的创造物从罪和罪的后果中救出时，他最大的目的就是完全复兴他曾创造的美好的一切，即整个宇宙应该在他的善治中再一次存活繁荣。普世的救赎这一目标率先在耶稣基督里被揭示并完成：“成了”(《约翰福音》19：30)，耶稣在十字架上的话语宣示了救赎已经圆满，即使它的最终启示等待于未来。圣经讲述了上帝朝向这最终的、普世的复兴不断前进的故事，也逐渐地揭示了当复兴最终得到满全的启示时这个复兴会是什么样的。在本书的最后一章，我们讨论历史在神的美好受造界之复兴和重生中结束。</p>
+<p>《启示录》最后的一些章节为我们清晰地描述了当上帝将历史引向终结时，等候万物的是什么，但我们已经在整本圣经中目睹了上帝救赎故事的发展方向。在神的子——耶稣的位格、言语和行动之中，圣经清晰地描述了神的国度，然而有关上帝对受造界的终极意图，圣经的其他部分也简短地透露了一些亮光。</p>
+<p><strong>故事的结尾</strong></p>
+<p>在《启示录》的最后一些章节中
+(尤其是21：1-5)，我们看到上帝的终极意图显示了出来。约翰被允许进入一个异象，看到新天新地，罪和恶被彻底清除。'旧天旧地
+(罪和死亡所统治的)让步于新的统治，主再次掌权。²神圣之城“新耶路撒冷”将从天上降临到地上，这表明上帝为世界而定的完美秩序重新得到加强。并且我们回想起耶稣祈祷说：“愿你的国降临，愿你的旨意行在地上，如同行在天上”(《马太福音》6：10)。神在天上的居所“新耶路撒冷”降临地上，这形象地表现了神的国度已来临，他的旨意就要永远施行在地上——如同永远施行在天上。</p>
+<blockquote>
+<p>从神的宝座传来的大声音宣告说：</p>
+<p>神的帐幕在人间。他要与人同住，他们要作他的子民；神要亲自与他们同在，作他们的神。神要擦去他们一切的眼泪，不再有死亡，也不再有悲哀、哭号、疼痛，因为以前的事都过去了。(《启示录》21:3-4)</p>
+<p>天堂，上帝的居所(因罪的缘故已远离受造界)“下降”到地上，这是一个激动人心的比喻，象征创造者和他所创造的一切之间恢复了统一与和谐。上帝他自己来临，与人同住于新地。罪和它所有的影响皆被清除；不再有死亡、疾病或疼痛，但只有安宁与和谐，因为上帝和人类之间的关系已被治愈。上帝再一次靠近我们，就像他与
+(我们的祖先)亚当和夏娃在园中同行的那些日子一样。人与人之间的关系也已治愈：爱在掌权。人类的全部生活得到净化，神的子民从先前罪和恶的奴役中解放出来，甚至其他受造物也分享这一解放。圣经故事的目标是更新的受造界：得治愈、救赎和复兴的受造界。</p>
+<p>虽然关于新创世的异象是圣经最后一书的高潮结尾，但是《启示录》的多数内容并不关注将来；它给予我们的是对上帝之意图的匆匆一瞥，这意图贯穿全部历史，导向这结尾。圣经的很多部分显示了人类在地上的历史，尤其是神子民的经历。在这最后一书中，神天上殿堂的幕布看似已向后拉开，这叫我们最终得以看见那长时间以来一直影响世界历史的属灵斗争，这是从我们自身为地所缚、历史局限的观点并不能看到斗争
+(参见《以弗所书》6:12)。</p>
+<p>约翰写作此书给一个小亚细亚的信从者小社团，他们遭受着罗马人残酷的迫害。对于他们来说，似乎他们在完全独自地面对邪恶的力量，但是约翰看到这些并向他的读者们揭示说，这个1世纪的教会所面对当地对福音的敌对背后，是撒旦对基督以及他的子民的持续不断和无法平息的憎恨。小亚细亚的这个小教会正在进行的是普世持续属灵斗争中的一场小战斗，但是他们不能看到上帝和撒旦之间战争的广阔性。所以约翰给这些惶恐却忠实的基督徒的是《启示录》的信息：上帝将得胜，那些忠实事奉的人将分享最后的胜利。即使在目前，他们自己正在进行的斗争，其结果看似不确定，但其实耶稣仍牢牢地掌控着世界事件。</p>
+<p>约翰的《启示录》之开篇便是关于荣升的基督一个惊人的异象，约翰解释说他受命记录现在正发生于历史中的事
+(在1世纪他所在的时代)，和将要发生于未来中的事
+(1：19)。但是作者关心的第一件事就</p>
+</blockquote>
+<p>是鼓励小亚细亚的七个代表性的教会，要在痛苦之中仍忠于福音(《启示录》2-3章)。之后幕布向后拉开，约翰得以看见天上殿堂的异象，宝座之上上帝荣耀地统治
+(《启示录》4章)。24 位长老
+(象征上帝所有的子民——《旧约》的以色列民族和《新约》教会)和四个活物(象征所有的受造物)俯伏在上帝的面前敬拜他。</p>
+<p>约翰然后看见一个有七印的书卷，这书卷代表对世界历史方向和目标的至上统治，当这个代表上帝意图的书卷最后展开时，邪恶将被征服，上帝的子民
+(名字写在书卷中的那些人)将享受他的救恩
+(《启示录》5章)。一名天使问道：“何人配得揭开七印展开书卷?何人能够令历史导向它的目标?何人可以征服邪恶完成拯救?”起初没人回答天使的问题。约翰开始悲痛地哭泣，因为他看见——如果没人能指导历史的进程，那么人类将陷入邪恶、痛苦和死亡之毫无意义的牢笼。然而一名长老安慰了他，邀请他再看一次，看那力大无穷的狮子，它已战胜它的仇敌，得以展开那书卷。但当约翰噙着泪水观看的时候，他并未看到帝王之狮，看到的却是可怜羔羊，血迹斑斑的像是被杀了。上帝的胜利不在任何战场上取得，他的胜利不是通过好战的狮子取得，而是通过在十字架上献出生命的羔羊取得。</p>
+<p>当羔羊从上帝那里拿了书卷，24位长老开始唱颂赞的歌，成千上万的天使接着吟唱，最后天地间每一个生灵都在颂唱，屈膝拜倒，敬拜羔羊：</p>
+<blockquote>
+<p>你配拿书卷，</p>
+<p>配揭开七印，</p>
+<p>因为你曾被杀，</p>
+<p>用自己的血从各族、各方、各民、各国中买了人来，</p>
+<p>叫他们归于神，</p>
+<p>又叫他们成为国民，</p>
+<p>作祭司，归于神，</p>
+<p>在地上执掌王权。……</p>
+<p>曾被杀的羔羊是配得权柄、丰富、智慧、能力、尊贵、荣耀和</p>
+<p>颂赞的。⋯⋯</p>
+<p>但愿颂赞、尊贵、荣耀、权势</p>
+<p>都归给坐宝座的和羔羊，直至永永远远。(《启示录》5：9-10；12-13)</p>
+<p>《启示录》的余下部分向我们显示了那荣升的羔羊耶稣揭开七印，引导历史朝向它的最终目的：建立神的国度。当钉死于十字架的伟大胜利者揭开七印、展开历史书卷之时，审判和拯救将降临世界。约翰揭示说历史的真正动因始终都是这场属灵斗争；尽管它通常隐藏起来不叫人感知到，但如今它在一连串生动的比喻中被启示给了约翰。虽然这些比喻错综复杂，有时令人感到困惑和恐惧，但是它们大致的意义是清楚的：上帝他自己是推动历史的那一位，他通过他的爱子推动历史。上帝的旨意将会实现：他的国将要来临，这是《启示录》第21和22章中有关新天新地的最后荣耀的比喻。</p>
+<p><strong>末了到来之前的事件</strong></p>
+<p>《新约》告诉我们三个主要事件将引进受造界的复兴和神国圆满的到来：(1)耶稣归来。(2)死人身体复活
+(一些人复活来享受新世界的生命，另一些则承受神最终的盛怒)。(3)世界来到基督面前接受审判。</p>
+<p>不幸的是，这些末世事件经常引发基督徒无益的争论，信徒们经常尝试建立一份普世时间表，在其中填入已知的历史事件。但既然有许多这样的时间表争相生成，这种关于上帝将做什么、他如何做，特别是他何时做的好奇心，常常只酿成信仰者之间的争吵而已，而信仰者本应做得更好。关于基督再来、千禧年、圣徒被提、末日审判、敌基督以及大灾难的具体时间，在不同的基督徒团体中有不同的认识。大卫·劳伦斯(David
+Lawrence)提醒说，我们关注这些事情就好像我们过分操心分娩阵痛的特征、力量和频率，而我们本应思想的是那婴孩！³虽然末世事件的“分娩阵痛”可以使人心醉神迷，但是我们必须足够重视它们所催生的新世界。继而我们此处的关注焦点便是“新生儿”，即等待降生的</p>
+</blockquote>
+<p>新世界。</p>
+<p><strong>新的创世：万物的复兴</strong></p>
+<p>《启示录》第21章是一个创世的异象，在这异象中，受造界完全恢复了它原初的美好。然而我们可能注意不到
+(除非我们特别留意这件事)，关于上帝最终意图的这个异象可能在本质上不同于我们的猜想；《启示录》没有描述说基督徒会突然从这个世界被运送出去，在天堂永远地作为精神而存在。莱特如此评论这种普遍的误解：“通常人们读《新约》时总假设‘尔死之日，将至天堂’是通篇毋庸置疑的一点……他们是从某处，但不是从《新约》，获得这个观点的。”⁴约翰在《启示录》中所见异象，的确应说整部《新约》，都没有将拯救描绘成从地上逃至人类灵魂永住的灵之天堂。⁵相反，约翰看见了(转而向我们显示)拯救是上帝的受造界在新地的复兴。在这个复兴的世界，上帝所救赎的人将在已经更新的世界中活在复活的肉身里，罪和它的影响已被清除出这个世界。这便是基督的追随者已经开始预尝的神之国度。</p>
+<p>拯救是受造界的复兴(而不是毁灭和重造)，这一概念暗示了我们所知的这个世界和将至世界两者间意味深远的连续性。然而圣经也暗示了一些非连续性的因素，⁶比方说，耶稣复活的肉身仍能被那些在他受死前就认得他的信徒辨出，然而他也似乎拥有了新能力，可以穿越紧闭之门和长距离的飞快行走
+(《路加福音》24：28-43)。当耶稣同撒都该人讲复活时婚姻是否继续存在的问题时，他提到了一种新的生活方式，这种方式超越了我们在此地此时所知的性关系
+(《马太福音》22：30；《路加福音》20：34-36)。所以，似乎在我们当今的生活和即将启示的生活之间同时存在连续性和非连续性，同时存有熟悉和陌生的事物。我们虽不能如我们想的那样清晰地看到
+(《哥林多前书》13：12)，但我们知道“神为爱他的人所预备的，是眼睛未曾看见，耳朵未曾听见……的”(2：9)。无论可能怎样，我们确实知道我们的新生命将以复活的肉身活在复兴的受造界中
+(《哥林多前书》15章)。</p>
+<blockquote>
+<p>受造界的复兴将十分广泛：人类生活的全部将在整个受造界的环境</p>
+</blockquote>
+<p>中得到复兴。我们对未来的观点总是仅仅强调个人的拯救，脱离了人类生活的整个受造界和相关的环境。⁷整个圣经故事看起来好像总是围绕着“我”来转，⁸然而《启示录》的异象，其实整个圣经故事，确实地引导我们来期待一个恢复其完好状态的受造界，它的每一面都将恢复到上帝意欲它的原初状态。并且，在那荣耀的圆满和完美的整体中，有一处位置是为我们而设的；救赎就其广度而言是普世性的。</p>
+<p>人类被创造是为了生活在受造界的环境中，享受同上帝的亲密关系。⁹撒旦通过引诱亚当和夏娃背叛上帝，而竭力阻挠上帝的计划——而且取得成功，至少从罪和它的影响而言，因为现在罪的影响触及整个受造界。但当上帝开始处理罪以及它破坏性的后果时，他的计划将是消灭美好受造界的仇敌，而不是毁灭受造界本身；毁灭他曾经创造的世界就是承认撒旦的大胜利。¹
+<span class="math inline"><sup>10</sup><em>J</em>.</span>. A. 赛斯 (J.
+A. Seiss)
+这样对待这个问题:“如果赎罪走得没有罪的结果远，那么它将是个用词错误，它未能真的赎罪⋯⋯任何数量的个体之拯救⋯⋯并非对那堕落的一切的救赎，而是一些裂片的聚合……(而且在这种情况下)撒旦的恶作剧就比基督的复兴工程走得更远。”¹¹然而圣经的故事却趋向这样一个结尾，即上帝的复兴之功将彻底败坏撒旦所有的“恶作剧”。</p>
+<p>纵观圣经，神的国度被描述成普世复兴发生的时空。上帝在《旧约》的预言中说道，“看哪，我造新天新地”(《以赛亚书》65：17；参见《彼得后书》3：13；《启示录》21：1-5)。当耶稣于十字架上征服了罪、战胜了死亡从墓中归来之后，彼得就在耶路撒冷宣告好消息，“天必留他，等到万物复兴的时候，就是神从创世以来，籍着圣先知的口所说的”(《使徒行转》3：21)。保罗也强调了上帝复兴之工的普世范围：“因为父喜欢叫一切的丰盛在他里面居住。既然藉着他在十字架上所流的血成就了和平，便藉着他叫万有，无论是地上的、天上的，都与自己和好了”(《歌罗西书》1：19-20)。就像伊甸园之后没有一物不曾被罪沾染一样，在基督十字架上的胜利之后，没有一物能够不被上帝的救赎所触及。</p>
+<p>上帝救赎之工的广度意味着，比方说，构成人类生活环境的非人类的受造物将会复兴成上帝自始以来意欲它的样子。因此，先知描绘了一</p>
+<p>种在上帝治理下万物之内的新和谐
+(《以赛亚书》65：17-25；《约珥书》2：18-27)。保罗说非人类的受造物长久以来分担着人类堕落罪中的痛苦，而现在它们期盼着就要来临的复兴：</p>
+<blockquote>
+<p>受造之物切望等候神的众子显出来。因为受造之物服在虚空之下，不是自己愿意，乃是因那叫他如此的。但受造之物仍然指望脱离败坏的辖制，得享神儿女自由的荣耀。(《罗马书》8：19-21)</p>
+</blockquote>
+<p class="source-note">本页内容由站点发布者提供的授权 Word 版本转换而来。为保留原书内容，文字按源文件呈现；版权归原作者及出版方所有。</p></div>
+  <script>
+const key = "scripture-reader-settings";
+let settings = { scale: 1, night: false };
+try { settings = { ...settings, ...JSON.parse(localStorage.getItem(key) || "{}") }; } catch {}
+
+const apply = () => {
+  document.documentElement.style.setProperty("--reader-scale", settings.scale);
+  document.body.classList.toggle("is-night", settings.night);
+  localStorage.setItem(key, JSON.stringify(settings));
+};
+
+document.querySelector("[data-font-down]").addEventListener("click", () => {
+  settings.scale = Math.max(.86, +(settings.scale - .08).toFixed(2));
+  apply();
+});
+document.querySelector("[data-font-up]").addEventListener("click", () => {
+  settings.scale = Math.min(1.36, +(settings.scale + .08).toFixed(2));
+  apply();
+});
+document.querySelector("[data-theme]").addEventListener("click", () => {
+  settings.night = !settings.night;
+  apply();
+});
+const updateProgress = () => {
+  const max = document.documentElement.scrollHeight - innerHeight;
+  const progress = max > 0 ? Math.min(100, Math.max(0, scrollY / max * 100)) : 0;
+  document.documentElement.style.setProperty("--progress", `${progress}%`);
+};
+addEventListener("scroll", updateProgress, { passive: true });
+addEventListener("resize", updateProgress);
+apply();
+updateProgress();
+</script>
+</body>
+</html>

@@ -1,25 +1,25 @@
 const BOOK = {
   title: "《圣经戏剧》授权中文版",
   subtitle: "找寻我们在圣经故事中的角色",
-  file: "./the-drama-of-scripture-authorized-cn.pdf",
+  file: "./the-drama-of-scripture-authorized-cn.docx",
   cover: "./images/hero-scripture.webp",
 };
 
 const ACTS = [
-  { number: "01", name: "创造", subtitle: "上帝建立他的国度", file: "./act-1-authorized-cn.pdf", pages: 14, printPage: 15 },
-  { number: "02", name: "堕落", subtitle: "国度里的叛逆", file: "./act-2-authorized-cn.pdf", pages: 6, printPage: 29 },
-  { number: "03", name: "以色列", subtitle: "君王拣选以色列 · 含幕间", file: "./act-3-authorized-cn.pdf", pages: 92, printPage: 35 },
-  { number: "04", name: "基督", subtitle: "王的到来 · 救赎的完成", file: "./act-4-authorized-cn.pdf", pages: 48, printPage: 127 },
-  { number: "05", name: "教会", subtitle: "传播王者的消息 · 教会的使命", file: "./act-5-authorized-cn.pdf", pages: 28, printPage: 175 },
-  { number: "06", name: "新创造", subtitle: "王的归来 · 国度成就", file: "./act-6-authorized-cn.pdf", pages: 10, printPage: 203 },
+  { number: "01", name: "创造", subtitle: "上帝建立他的国度", file: "./act-1-authorized-cn.html", printPage: 15 },
+  { number: "02", name: "堕落", subtitle: "国度里的叛逆", file: "./act-2-authorized-cn.html", printPage: 29 },
+  { number: "03", name: "以色列", subtitle: "君王拣选以色列 · 含幕间", file: "./act-3-authorized-cn.html", printPage: 35 },
+  { number: "04", name: "基督", subtitle: "王的到来 · 救赎的完成", file: "./act-4-authorized-cn.html", printPage: 127 },
+  { number: "05", name: "教会", subtitle: "传播王者的消息 · 教会的使命", file: "./act-5-authorized-cn.html", printPage: 175 },
+  { number: "06", name: "新创造", subtitle: "王的归来 · 圆满救赎", file: "./act-6-authorized-cn.html", printPage: 203 },
 ];
 
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 let currentAct = 0;
 let lastTrigger = null;
 
-function pdfUrl(file, page = 1) {
-  return `${file}#page=${page}&view=FitH`;
+function readerUrl(file) {
+  return file;
 }
 
 function createReader() {
@@ -43,7 +43,7 @@ function createReader() {
             全屏阅读本幕
           </a>
           <a class="authorized-reader__download" href="${BOOK.file}" download>
-            下载 PDF
+            下载 Word
           </a>
           <button class="authorized-reader__close" type="button" data-reader-close aria-label="关闭授权原文阅读器">
             <span></span><span></span>
@@ -54,7 +54,7 @@ function createReader() {
         <aside class="authorized-reader__chapters" aria-label="授权原文章节导航">
           <figure class="authorized-reader__book">
             <img src="${BOOK.cover}" alt="《圣经戏剧》授权中文版封面" />
-            <figcaption>六幕分卷阅读 · 完整版 247 页</figcaption>
+            <figcaption>六幕网页阅读 · 完整 Word 版</figcaption>
           </figure>
           <nav>
             ${ACTS.map((act, index) => `
@@ -82,13 +82,13 @@ function createReader() {
               <i></i><span>正在载入授权原文</span>
             </div>
             <iframe
-              title="《圣经戏剧》授权原文阅读器"
+              title="《圣经戏剧》授权原文网页阅读器"
               data-reader-frame
               loading="lazy"
             ></iframe>
           </div>
           <p class="authorized-reader__mobile-help">
-            如果设备无法在页面中显示 PDF，请使用上方“全屏打开”。
+            如果设备内嵌阅读区域较小，请使用上方“全屏阅读本幕”。
           </p>
         </main>
       </div>
@@ -109,7 +109,7 @@ function createReader() {
     currentAct = nextIndex;
     current.textContent = `第${["一", "二", "三", "四", "五", "六"][nextIndex]}幕 · ${act.name}`;
     page.textContent = `书内第 ${act.printPage} 页`;
-    external.href = pdfUrl(act.file);
+    external.href = readerUrl(act.file);
     actButtons.forEach((button, buttonIndex) => {
       const selected = buttonIndex === nextIndex;
       button.classList.toggle("is-active", selected);
@@ -117,7 +117,7 @@ function createReader() {
     });
     if (forceLoad || modal.classList.contains("is-open")) {
       loading.classList.remove("is-hidden");
-      frame.src = pdfUrl(act.file);
+      frame.src = readerUrl(act.file);
     }
   };
 
