@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1280, height=720" />
+    <title>圣经宏大叙事 · HyperFrames</title>
+    <script src="./assets/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "HF Sans CN"; src: url("./assets/noto-sans-sc-400.woff2") format("woff2"); font-weight: 400; font-display: block; }
+      @font-face { font-family: "HF Sans CN"; src: url("./assets/noto-sans-sc-700.woff2") format("woff2"); font-weight: 700; font-display: block; }
+      @font-face { font-family: "HF Display CN"; src: url("./assets/noto-serif-sc-700.woff2") format("woff2"); font-weight: 700; font-display: block; }
+      @font-face { font-family: "HF Mono"; src: url("./assets/jetbrains-mono-400.woff2") format("woff2"); font-weight: 400; font-display: block; }
+
+      :root {
+        --ink: #030b09;
+        --deep: #071410;
+        --ivory: #edf1e9;
+        --mist: #aab8af;
+        --coral: #ef5b3f;
+        --gold: #e8b867;
+        --gold-pale: #ffe4ad;
+        --cyan: #89d6d0;
+      }
+
+      * { box-sizing: border-box; }
+
+      html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: var(--ink);
+      }
+
+      body {
+        color: var(--ivory);
+        font-family: "HF Sans CN", sans-serif;
+      }
+
+      #root {
+        position: relative;
+        width: 1280px;
+        height: 720px;
+        overflow: hidden;
+        isolation: isolate;
+        background:
+          radial-gradient(circle at 50% 68%, rgba(232, 184, 103, .12), transparent 25%),
+          radial-gradient(circle at 72% 28%, rgba(239, 91, 63, .08), transparent 28%),
+          #030b09;
+      }
+
+      .clip {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+      }
+
+      .atmosphere,
+      .vignette,
+      .grain,
+      .light-column,
+      .starfield {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      .vignette {
+        z-index: 30;
+        box-shadow: inset 0 0 170px 55px rgba(0, 4, 3, .92);
+      }
+
+      .grain {
+        z-index: 31;
+        opacity: .17;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.36'/%3E%3C/svg%3E");
+        mix-blend-mode: soft-light;
+      }
+
+      .star {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        border-radius: 50%;
+        background: var(--ivory);
+        box-shadow: 0 0 8px rgba(255, 228, 173, .7);
+      }
+
+      .light-column {
+        z-index: 2;
+        top: -14%;
+        left: 50%;
+        width: 370px;
+        height: 790px;
+        opacity: 0;
+        transform: translateX(-50%);
+        clip-path: polygon(44% 0, 56% 0, 100% 100%, 0 100%);
+        background: linear-gradient(180deg, rgba(255, 245, 209, .8), rgba(255, 196, 104, .02));
+        filter: blur(22px);
+        mix-blend-mode: screen;
+      }
+
+      .meta {
+        position: absolute;
+        z-index: 20;
+        top: 33px;
+        right: 42px;
+        left: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-family: "HF Mono", monospace;
+        font-size: 11px;
+        letter-spacing: .19em;
+        color: rgba(237, 241, 233, .56);
+      }
+
+      .meta-mark { color: var(--coral); }
+
+      .title-card {
+        position: absolute;
+        z-index: 18;
+        top: 82px;
+        left: 54px;
+        width: 430px;
+      }
+
+      .title-card small {
+        display: block;
+        margin-bottom: 16px;
+        color: var(--gold);
+        font-family: "HF Mono", monospace;
+        font-size: 11px;
+        line-height: 1.2;
+        letter-spacing: .24em;
+      }
+
+      .title-card h1 {
+        margin: 0;
+        max-width: 390px;
+        font-family: "HF Display CN", serif;
+        font-size: 54px;
+        font-weight: 700;
+        line-height: .98;
+        letter-spacing: -.07em;
+      }
+
+      .title-card p {
+        margin: 15px 0 0;
+        color: var(--mist);
+        font-size: 14px;
+        line-height: 1.7;
+      }
+
+      .live-tilt {
+        position: absolute;
+        z-index: 8;
+        inset: 0;
+        transform: perspective(1100px) rotateX(calc(var(--iy, 0) * -2deg)) rotateY(calc(var(--ix, 0) * 3deg));
+        transform-style: preserve-3d;
+        transition: transform .28s cubic-bezier(.16, 1, .3, 1);
+      }
+
+      .book-stage {
+        position: absolute;
+        z-index: 7;
+        left: 50%;
+        bottom: 34px;
+        width: 600px;
+        height: 350px;
+        transform: translateX(-50%);
+        transform-style: preserve-3d;
+      }
+
+      .book-shadow {
+        position: absolute;
+        left: 50%;
+        bottom: 10px;
+        width: 410px;
+        height: 74px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, .8);
+        filter: blur(25px);
+      }
+
+      .book {
+        position: absolute;
+        left: 50%;
+        bottom: 42px;
+        width: 350px;
+        height: 225px;
+        transform-style: preserve-3d;
+        filter: drop-shadow(0 24px 24px rgba(0, 0, 0, .5));
+      }
+
+      .book-spine {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 20px;
+        height: 100%;
+        border-radius: 7px;
+        background: linear-gradient(90deg, #321a10, #8a4e2e 48%, #29150e);
+        transform: translateX(-50%) translateZ(3px);
+      }
+
+      .book-half {
+        position: absolute;
+        top: 0;
+        width: 176px;
+        height: 225px;
+        transform-style: preserve-3d;
+      }
+
+      .book-half.left {
+        right: 50%;
+        transform-origin: right center;
+      }
+
+      .book-half.right {
+        left: 50%;
+        transform-origin: left center;
+      }
+
+      .cover,
+      .page {
+        position: absolute;
+        inset: 0;
+        border-radius: 7px 3px 3px 7px;
+        transform-origin: right center;
+        backface-visibility: hidden;
+      }
+
+      .right .cover,
+      .right .page {
+        border-radius: 3px 7px 7px 3px;
+        transform-origin: left center;
+      }
+
+      .cover {
+        z-index: 6;
+        border: 3px solid #9d6335;
+        background:
+          linear-gradient(115deg, transparent 0 44%, rgba(255,255,255,.07) 46%, transparent 50%),
+          radial-gradient(circle at 42% 35%, #5f2a1b, #25110d 68%);
+        box-shadow:
+          inset 0 0 0 9px rgba(226, 165, 83, .14),
+          inset 0 0 0 11px rgba(17, 7, 4, .65);
+      }
+
+      .cover::before {
+        content: "";
+        position: absolute;
+        inset: 22px;
+        border: 1px solid rgba(232, 184, 103, .58);
+      }
+
+      .cover-cross {
+        position: absolute;
+        z-index: 8;
+        top: 50%;
+        left: 50%;
+        width: 42px;
+        height: 82px;
+        transform: translate(-50%, -50%);
+        filter: drop-shadow(0 0 9px rgba(232, 184, 103, .45));
+      }
+
+      .cover-cross::before,
+      .cover-cross::after {
+        content: "";
+        position: absolute;
+        background: linear-gradient(90deg, #7a4d27, var(--gold-pale), #7a4d27);
+      }
+
+      .cover-cross::before { top: 0; left: 16px; width: 10px; height: 82px; }
+      .cover-cross::after { top: 24px; left: 0; width: 42px; height: 10px; }
+
+      .page {
+        z-index: 4;
+        border: 1px solid #aa9167;
+        background:
+          repeating-linear-gradient(0deg, transparent 0 12px, rgba(91, 67, 37, .13) 13px),
+          #e8dcc0;
+        box-shadow: inset 0 0 20px rgba(94, 63, 28, .18);
+      }
+
+      .left .page { transform: translateZ(5px) rotateY(89deg); }
+      .right .page { transform: translateZ(5px) rotateY(-89deg); }
+
+      .left .cover { transform: translateZ(2px) rotateY(0deg); }
+      .right .cover { transform: translateZ(1px) rotateY(0deg); }
+
+      .page-light {
+        position: absolute;
+        z-index: 3;
+        left: 50%;
+        bottom: 92px;
+        width: 270px;
+        height: 110px;
+        opacity: 0;
+        border-radius: 50%;
+        background: rgba(255, 219, 155, .7);
+        filter: blur(34px);
+        transform: translateX(-50%);
+        mix-blend-mode: screen;
+      }
+
+      .scene {
+        position: absolute;
+        z-index: 12;
+        inset: 66px 38px 205px;
+        opacity: 0;
+        transform: scale(.84);
+        pointer-events: none;
+      }
+
+      .scene-label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        max-width: 460px;
+      }
+
+      .scene-label b {
+        display: block;
+        color: var(--coral);
+        font-family: "HF Mono", monospace;
+        font-size: 11px;
+        line-height: 1.25;
+        letter-spacing: .23em;
+      }
+
+      .scene-label strong {
+        display: block;
+        margin-top: 15px;
+        font-family: "HF Display CN", serif;
+        font-size: 46px;
+        line-height: 1.08;
+        letter-spacing: -.04em;
+      }
+
+      .scene-label span {
+        display: block;
+        margin-top: 8px;
+        color: var(--mist);
+        font-size: 14px;
+      }
+
+      .scene-art {
+        position: absolute;
+        inset: 0;
+      }
+
+      .scene-art svg {
+        position: absolute;
+        overflow: visible;
+        filter: drop-shadow(0 0 18px rgba(232, 184, 103, .18));
+      }
+
+      .stroke-gold { fill: none; stroke: var(--gold-pale); stroke-width: 3; }
+      .stroke-coral { fill: none; stroke: var(--coral); stroke-width: 3; }
+      .fill-gold { fill: var(--gold); }
+      .fill-ivory { fill: var(--ivory); }
+      .fill-deep { fill: var(--deep); }
+
+      .cosmos { top: 52px; right: 36px; width: 370px; }
+      .earth { top: 172px; left: 415px; width: 160px; }
+      .human { right: 325px; bottom: -6px; width: 100px; }
+      .ark { top: 120px; right: 30px; width: 360px; }
+      .fall-tree { left: 420px; bottom: -12px; width: 235px; }
+      .promise { top: 102px; right: 20px; width: 420px; }
+      .sea { right: 350px; bottom: -28px; width: 235px; }
+      .david { right: 138px; bottom: -22px; width: 165px; }
+      .prophets { right: 0; top: 98px; width: 240px; }
+      .nativity { right: 74px; top: 90px; width: 330px; }
+      .miracle { right: 430px; bottom: -12px; width: 220px; }
+      .cross { right: 96px; bottom: -30px; width: 160px; }
+      .mission { top: 100px; right: 35px; width: 460px; }
+      .church { right: 452px; bottom: -26px; width: 190px; }
+      .new-city { top: 84px; right: 25px; width: 440px; }
+      .victory { right: 430px; bottom: -18px; width: 220px; }
+
+      .event-pill {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 8px 12px;
+        border: 1px solid rgba(232, 184, 103, .28);
+        border-radius: 999px;
+        color: var(--ivory);
+        background: rgba(3, 11, 9, .7);
+        backdrop-filter: blur(8px);
+        font-size: 12px;
+      }
+
+      .event-pill::before {
+        content: "";
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--coral);
+        box-shadow: 0 0 12px var(--coral);
+      }
+
+      .p1 { top: 125px; left: 26px; }
+      .p2 { top: 173px; left: 96px; }
+      .p3 { top: 221px; left: 28px; }
+      .p4 { top: 269px; left: 118px; }
+
+      .final-word {
+        position: absolute;
+        z-index: 19;
+        top: 103px;
+        left: 50%;
+        width: 830px;
+        opacity: 0;
+        text-align: center;
+        transform: translateX(-50%);
+      }
+
+      .final-word small {
+        display: block;
+        color: var(--gold);
+        font-family: "HF Mono", monospace;
+        font-size: 11px;
+        line-height: 1.2;
+        letter-spacing: .28em;
+      }
+
+      .final-word strong {
+        display: block;
+        margin-top: 16px;
+        font-family: "HF Display CN", serif;
+        font-size: 66px;
+        line-height: 1.08;
+        letter-spacing: -.06em;
+        text-shadow: 0 0 34px rgba(255, 228, 173, .3);
+      }
+
+      .final-word p {
+        margin: 12px auto 0;
+        color: var(--mist);
+        font-size: 15px;
+      }
+
+      .energy-ring {
+        position: absolute;
+        z-index: 4;
+        left: 50%;
+        bottom: 96px;
+        width: 410px;
+        height: 150px;
+        opacity: 0;
+        border: 2px solid rgba(255, 228, 173, .52);
+        border-radius: 50%;
+        box-shadow:
+          0 0 38px rgba(255, 228, 173, .22),
+          inset 0 0 28px rgba(255, 228, 173, .16);
+      }
+
+      .progress-rail {
+        position: absolute;
+        z-index: 22;
+        right: 42px;
+        bottom: 30px;
+        left: 42px;
+        height: 1px;
+        background: rgba(237, 241, 233, .14);
+      }
+
+      .progress-line {
+        width: 100%;
+        height: 100%;
+        background: var(--coral);
+        transform-origin: left;
+        box-shadow: 0 0 16px rgba(239, 91, 63, .7);
+      }
+
+      .progress-rail::before,
+      .progress-rail::after {
+        content: "";
+        position: absolute;
+        top: -3px;
+        width: 7px;
+        height: 7px;
+        border: 1px solid var(--gold);
+        transform: rotate(45deg);
+      }
+
+      .progress-rail::before { left: 0; }
+      .progress-rail::after { right: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="scripture-cinematic" data-start="0" data-width="1280" data-height="720" data-duration="38">
+      <section id="cinematic" class="clip" data-start="0" data-duration="38" data-track-index="1">
+        <div class="starfield" id="starfield"></div>
+        <div class="atmosphere"></div>
+        <div class="light-column"></div>
+        <div class="energy-ring"></div>
+        <div class="meta"><span><i class="meta-mark">HF /</i> THE DRAMA OF SCRIPTURE</span><span>38 SEC · SIX ACTS</span></div>
+
+        <header class="title-card">
+          <small>TOUCH THE STORY</small>
+          <h1>让整本圣经<br />从书页中展开</h1>
+          <p>创造、堕落、以色列、基督、教会与新创造——不是零散故事，而是一条通往更新的宏大叙事。</p>
+        </header>
+
+        <div class="live-tilt">
+          <div class="book-stage">
+            <div class="book-shadow"></div>
+            <div class="page-light"></div>
+            <div class="book">
+              <div class="book-spine"></div>
+              <div class="book-half left"><div class="page"></div><div class="cover"><i class="cover-cross"></i></div></div>
+              <div class="book-half right"><div class="page"></div><div class="cover"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <article class="scene scene-1">
+          <div class="scene-label"><b>ACT I / CREATION</b><strong>受造世界被唤醒</strong><span>宇宙、地球与承载上帝形象的人</span></div>
+          <div class="scene-art">
+            <svg class="cosmos" viewBox="0 0 420 240"><ellipse class="stroke-gold" cx="224" cy="118" rx="172" ry="52" transform="rotate(-13 224 118)"/><ellipse class="stroke-coral" cx="224" cy="118" rx="125" ry="176" transform="rotate(62 224 118)"/><circle class="fill-ivory" cx="224" cy="118" r="8"/><circle class="fill-gold" cx="77" cy="72" r="5"/><circle class="fill-gold" cx="360" cy="157" r="4"/><path class="stroke-gold" d="M34 197C118 136 250 53 393 37"/></svg>
+            <svg class="earth" viewBox="0 0 180 180"><circle class="stroke-gold" cx="90" cy="90" r="72"/><path class="stroke-coral" d="M54 39c26 10 16 27 38 31s9 28 28 34 13 29-3 42M30 96c30-17 39 0 54-3 16-2 11-23 32-25 15-1 23 7 36 17"/></svg>
+            <svg class="human" viewBox="0 0 100 190"><circle class="fill-gold" cx="50" cy="28" r="18"/><path class="stroke-gold" d="M50 48v70M50 72L14 105M50 72l36 33M50 118l-25 64M50 118l25 64"/></svg>
+          </div>
+        </article>
+
+        <article class="scene scene-2">
+          <div class="scene-label"><b>ACT II / FALL</b><strong>美好世界出现裂痕</strong><span>选择悖逆之后，暴力、洪水与流离进入历史</span></div>
+          <div class="scene-art">
+            <svg class="fall-tree" viewBox="0 0 260 300"><path class="stroke-gold" d="M130 286V118M130 150L78 94M130 160l64-76M130 201l-76-44M130 216l81-28"/><circle class="stroke-coral" cx="81" cy="80" r="49"/><circle class="stroke-gold" cx="188" cy="73" r="61"/><path class="stroke-coral" d="M147 25l-28 69 34 28-37 57"/></svg>
+            <svg class="ark" viewBox="0 0 420 230"><path class="stroke-gold" d="M45 158h322c-18 46-58 65-160 65S70 206 45 158Z"/><path class="stroke-coral" d="M92 158V92h223v66M75 92h260L207 33 75 92Z"/><path class="stroke-gold" d="M115 112h44M184 112h44M252 112h44M20 183c42-19 62 19 104 0s62 19 104 0 62 19 104 0 62 19 82 0"/></svg>
+            <span class="event-pill p1">人的悖逆</span><span class="event-pill p2">关系破裂</span><span class="event-pill p3">暴力蔓延</span>
+          </div>
+        </article>
+
+        <article class="scene scene-3">
+          <div class="scene-label"><b>ACT III / ISRAEL</b><strong>应许进入人类历史</strong><span>从亚伯拉罕到先知，上帝预备一个承载救恩的群体</span></div>
+          <div class="scene-art">
+            <svg class="promise" viewBox="0 0 460 230"><path class="stroke-gold" d="M32 185C88 122 134 91 212 110s130 8 215-73"/><path class="stroke-coral" d="M80 184l68-93 69 93H80Z"/><path class="stroke-gold" d="M149 93v91M216 184c31-29 49-55 75-86M289 99v85"/><circle class="fill-gold" cx="356" cy="53" r="5"/><circle class="fill-gold" cx="389" cy="29" r="3"/><circle class="fill-ivory" cx="326" cy="38" r="3"/></svg>
+            <svg class="sea" viewBox="0 0 260 200"><path class="stroke-coral" d="M12 174c51-24 52-125 90-142M248 174c-51-24-52-125-90-142"/><path class="stroke-gold" d="M106 174V98M106 113l-27 31M106 113l25 28M106 174l-17 24M106 174l17 24"/></svg>
+            <svg class="david" viewBox="0 0 180 220"><circle class="fill-gold" cx="52" cy="50" r="16"/><path class="stroke-gold" d="M52 69v72M52 93l49-22M52 91l-33 37M52 141l-24 71M52 141l29 71"/><path class="stroke-coral" d="M102 72c47-16 55 55 8 72M111 73l-9 72"/></svg>
+            <svg class="prophets" viewBox="0 0 260 240"><path class="stroke-gold" d="M30 212V73h50v139M105 212V32h50v180M180 212V96h50v116"/><circle class="fill-coral" cx="55" cy="52" r="9"/><circle class="fill-gold" cx="130" cy="15" r="9"/><circle class="fill-ivory" cx="205" cy="75" r="9"/></svg>
+          </div>
+        </article>
+
+        <article class="scene scene-4">
+          <div class="scene-label"><b>ACT IV / CHRIST</b><strong>君王亲自来到</strong><span>耶稣宣告天国、医治破碎，并经过十字架进入复活</span></div>
+          <div class="scene-art">
+            <svg class="nativity" viewBox="0 0 360 250"><path class="stroke-gold" d="M180 12l8 26 27 1-22 16 8 26-21-16-22 16 9-26-22-16 27-1 8-26Z"/><path class="stroke-coral" d="M47 226L180 80l133 146M91 226V178h178v48"/><path class="stroke-gold" d="M143 226c10-42 64-42 74 0"/></svg>
+            <svg class="miracle" viewBox="0 0 240 220"><path class="stroke-gold" d="M15 170c38-29 56 28 94 0s56 28 94 0M15 197c38-29 56 28 94 0s56 28 94 0"/><circle class="fill-gold" cx="112" cy="55" r="17"/><path class="stroke-gold" d="M112 75v65M112 99l-42 28M112 99l42 28"/></svg>
+            <svg class="cross" viewBox="0 0 180 250"><path class="stroke-coral" stroke-width="10" d="M90 28v190M38 83h104"/><path class="stroke-gold" d="M21 228h138M51 228c15-27 25-36 39-36s26 9 39 36"/></svg>
+            <span class="event-pill p1">降生</span><span class="event-pill p2">天国与神迹</span><span class="event-pill p3">十字架</span><span class="event-pill p4">复活升天</span>
+          </div>
+        </article>
+
+        <article class="scene scene-5">
+          <div class="scene-label"><b>ACT V / CHURCH</b><strong>福音越过疆界</strong><span>圣灵差遣门徒走向万国，在世界中活出上帝国度的记号</span></div>
+          <div class="scene-art">
+            <svg class="mission" viewBox="0 0 500 280"><circle class="stroke-gold" cx="268" cy="140" r="92"/><path class="stroke-gold" d="M178 140h180M268 48c-54 45-54 139 0 184M268 48c54 45 54 139 0 184M202 77c34 20 98 20 132 0M202 203c34-20 98-20 132 0"/><path class="stroke-coral" d="M24 214C91 139 130 119 181 127M18 214l42-9-31-28M470 59c-67 75-86 83-116 77M476 59l-42 9 31 28"/></svg>
+            <svg class="church" viewBox="0 0 210 230"><path class="stroke-gold" d="M18 215h174M36 215V104l69-57 69 57v111M84 215v-66h42v66"/><path class="stroke-coral" d="M105 47V3M79 22h52"/></svg>
+          </div>
+        </article>
+
+        <article class="scene scene-6">
+          <div class="scene-label"><b>ACT VI / NEW CREATION</b><strong>看哪，万物都更新了</strong><span>邪恶终结，君王与祂的子民得胜，新天新地成为永恒的家</span></div>
+          <div class="scene-art">
+            <svg class="new-city" viewBox="0 0 480 290"><circle class="stroke-gold" cx="330" cy="70" r="42"/><path class="stroke-coral" d="M60 246V137h48v109M118 246V84h58v162M188 246V116h52v130M250 246V53h72v193M336 246V132h48v114M397 246V98h47v148M28 246h432"/><path class="stroke-gold" d="M32 274c82-45 137-4 219-28s117 24 201-9"/></svg>
+            <svg class="victory" viewBox="0 0 240 240"><path class="stroke-gold" d="M120 219V87M120 112L65 151M120 112l55 39M74 57l22 26 24-49 24 49 22-26 26 78H48l26-78Z"/><circle class="stroke-coral" cx="120" cy="172" r="48"/></svg>
+          </div>
+        </article>
+
+        <div class="final-word"><small>THE STORY CONTINUES IN US</small><strong>进入那一个故事</strong><p>圣经邀请我们在上帝的宏大叙事中，找到自己的位置。</p></div>
+
+        <div class="progress-rail"><div class="progress-line"></div></div>
+        <div class="grain"></div>
+        <div class="vignette"></div>
+      </section>
+    </div>
+
+    <script>
+      (() => {
+        const starfield = document.getElementById("starfield");
+        let seed = 20260724;
+        const random = () => {
+          seed = (seed * 1664525 + 1013904223) >>> 0;
+          return seed / 4294967296;
+        };
+        for (let i = 0; i < 58; i += 1) {
+          const star = document.createElement("i");
+          star.className = "star";
+          star.style.left = `${random() * 100}%`;
+          star.style.top = `${random() * 82}%`;
+          star.style.opacity = `${.18 + random() * .58}`;
+          star.style.transform = `scale(${.45 + random() * 1.4})`;
+          starfield.appendChild(star);
+        }
+
+        window.__timelines = window.__timelines || {};
+        const tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
+
+        tl.set(".book", { xPercent: -50, rotationX: 58, rotationZ: -2 })
+          .set(".book-shadow", { xPercent: -50, scaleX: .65 })
+          .set(".energy-ring", { xPercent: -50, scale: .45 })
+          .set(".progress-line", { scaleX: 0 })
+          .set(".scene, .final-word", { autoAlpha: 0 })
+          .set(".light-column, .page-light, .energy-ring", { autoAlpha: 0 })
+          .from(".meta", { y: -18, autoAlpha: 0, duration: .8 }, 0)
+          .from(".title-card small", { x: -24, autoAlpha: 0, duration: .7 }, .15)
+          .from(".title-card h1", { x: -45, autoAlpha: 0, duration: 1.1 }, .25)
+          .from(".title-card p", { y: 22, autoAlpha: 0, duration: .8 }, .62)
+          .from(".book", { y: 190, rotationZ: -16, scale: .72, autoAlpha: 0, duration: 1.5, ease: "back.out(1.35)" }, .2)
+          .from(".book-shadow", { scaleX: .1, autoAlpha: 0, duration: 1.3 }, .3)
+          .to(".book", { y: -24, duration: .7, ease: "power2.inOut" }, 1.72)
+          .to(".book-shadow", { scaleX: 1, opacity: .72, duration: .7, ease: "power2.inOut" }, 1.72)
+          .to(".left .cover", { rotationY: 176, duration: 1.25, ease: "power4.inOut" }, 2.3)
+          .to(".right .cover", { rotationY: -176, duration: 1.25, ease: "power4.inOut" }, 2.3)
+          .to(".left .page", { rotationY: 8, duration: 1.15, ease: "power3.inOut" }, 2.5)
+          .to(".right .page", { rotationY: -8, duration: 1.15, ease: "power3.inOut" }, 2.5)
+          .to(".book", { scale: 1.18, y: 2, duration: 1.1, ease: "power2.out" }, 2.55)
+          .to(".page-light", { autoAlpha: .9, scale: 1.45, duration: 1.2 }, 2.8)
+          .to(".light-column", { autoAlpha: .34, duration: 1.2 }, 2.8)
+          .to(".energy-ring", { autoAlpha: .62, scale: 1, duration: 1.15 }, 2.85)
+          .to(".title-card", { x: -40, autoAlpha: 0, duration: .65 }, 3.45);
+
+        const acts = [
+          { selector: ".scene-1", start: 4.0, end: 8.5, art: [".cosmos", ".earth", ".human"] },
+          { selector: ".scene-2", start: 8.5, end: 13.5, art: [".fall-tree", ".ark", ".scene-2 .event-pill"] },
+          { selector: ".scene-3", start: 13.5, end: 20.0, art: [".promise", ".sea", ".david", ".prophets"] },
+          { selector: ".scene-4", start: 20.0, end: 26.0, art: [".nativity", ".miracle", ".cross", ".scene-4 .event-pill"] },
+          { selector: ".scene-5", start: 26.0, end: 31.0, art: [".mission", ".church"] },
+          { selector: ".scene-6", start: 31.0, end: 35.8, art: [".new-city", ".victory"] }
+        ];
+
+        acts.forEach((act, index) => {
+          tl.fromTo(act.selector, { autoAlpha: 0, scale: .83, y: 24 }, { autoAlpha: 1, scale: 1, y: 0, duration: .78 }, act.start)
+            .from(`${act.selector} .scene-label b`, { x: -28, autoAlpha: 0, duration: .52 }, act.start + .05)
+            .from(`${act.selector} .scene-label strong`, { x: -42, autoAlpha: 0, duration: .76 }, act.start + .16)
+            .from(`${act.selector} .scene-label span`, { y: 18, autoAlpha: 0, duration: .6 }, act.start + .36);
+          act.art.forEach((selector, artIndex) => {
+            tl.from(selector, {
+              x: artIndex % 2 ? 80 : -70,
+              y: 68 - artIndex * 18,
+              rotation: artIndex % 2 ? 7 : -7,
+              scale: .42,
+              autoAlpha: 0,
+              duration: .88,
+              stagger: .11,
+              ease: "back.out(1.45)"
+            }, act.start + .48 + artIndex * .14);
+          });
+          tl.to(act.selector, { autoAlpha: 0, scale: 1.08, y: -22, duration: .7, ease: "power2.in" }, act.end - .7);
+          tl.to(".book", { rotationZ: index % 2 ? 1.2 : -1.2, y: index % 2 ? -4 : 4, duration: .85, ease: "sine.inOut" }, act.start + .7);
+        });
+
+        tl.to(".progress-line", { scaleX: 1, duration: 38, ease: "none" }, 0)
+          .to(".energy-ring", { rotation: 180, duration: 34, ease: "none" }, 3)
+          .to(".starfield", { scale: 1.08, rotation: 1.2, duration: 38, ease: "none" }, 0)
+          .to(".light-column", { scaleX: 1.34, autoAlpha: .7, duration: 1.2 }, 35.2)
+          .to(".page-light", { scale: 2.4, autoAlpha: 1, duration: 1.2 }, 35.2)
+          .to(".energy-ring", { scale: 1.55, autoAlpha: 1, duration: 1.2 }, 35.2)
+          .to(".book", { scale: 1.34, y: 18, duration: 1.2, ease: "power2.out" }, 35.2)
+          .fromTo(".final-word", { autoAlpha: 0, y: 34, scale: .92 }, { autoAlpha: 1, y: 0, scale: 1, duration: 1.1 }, 35.6)
+          .to(".final-word strong", { textShadow: "0 0 60px rgba(255, 228, 173, .65)", duration: 1.2 }, 36.2);
+
+        window.__timelines["scripture-cinematic"] = tl;
+
+        window.addEventListener("message", (event) => {
+          const data = event.data;
+          if (!data || data.type !== "scripture-live-pointer") return;
+          const x = Math.max(-1, Math.min(1, Number(data.x) || 0));
+          const y = Math.max(-1, Math.min(1, Number(data.y) || 0));
+          document.documentElement.style.setProperty("--ix", x);
+          document.documentElement.style.setProperty("--iy", y);
+        });
+      })();
+    </script>
+  </body>
+</html>
